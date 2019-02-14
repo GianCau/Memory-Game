@@ -139,6 +139,7 @@ function cardsMatch(cardArray) {
 
 		document.getElementById(cardArray[0]).classList.add("match")
 		document.getElementById(cardArray[1]).classList.add("match")
+		cardList.length = 0
 
 	}else{
 
