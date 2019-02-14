@@ -7,12 +7,17 @@ let arrayCards = ['fa-diamond','fa-paper-plane-o','fa-anchor','fa-bolt','fa-cube
 const restart = document.querySelector('.restart')
 const cards = document.querySelectorAll('.card')
 const childCards = document.querySelectorAll('.card > .fa')
+const moves = document.querySelector('.moves')
 
 // cardsArray convert a NodeList to an Array
 const cardsArray = Array.prototype.slice.call(cards);
 const childrenCardsArray = Array.prototype.slice.call(childCards);
 //this array contains the cards that have a "show" class.
 let cardList = [];
+//this variable count how many moved did the user do
+let cont = 0
+//this variable counts how many matches did the user get
+let countMatches = 0
 
 
 
@@ -30,6 +35,9 @@ restart.addEventListener('click', function (e) {
 	let newRandomCards = shuffle(arrayCards)
 	reset()
 	changeCardPosition(childCards,newRandomCards)
+	cont = 0
+	moves.textContent =  cont
+
 })
 
 //this function show the new disposition from the cards
@@ -71,7 +79,7 @@ function shuffle(array) {
 
 function reset() {
 
-	cards.forEach((item)=> {
+	cards.forEach((item) => {
 
 		if (item.classList.contains("show") || item.classList.contains("match")) {
 			item.classList.remove('show')
@@ -111,12 +119,18 @@ cards.forEach((e) => {
 //this function add the pressed card toi an array list
 
 function openedCards(card) {
-	if (card.classList.contains('show')) {
+
+	if (card.classList.contains('show'))
+	{
+
 		card.classList.remove('show')
 		card.classList.remove('open')
+
 	} else {
 		card.classList.add('show')
 		card.classList.add('open')
+
+		counter(card)
 	}
 
 	cardList.push(card.id)
@@ -128,6 +142,16 @@ function openedCards(card) {
 	}
 }
 
+//this function count how many moves did the user do
+
+function counter() {
+
+	cont += 1
+	moves.textContent = cont
+
+}
+
+
 // this function checks if the cards matches
 
 function cardsMatch(cardArray) {
@@ -135,16 +159,37 @@ function cardsMatch(cardArray) {
 	let cardOne = document.getElementById(cardArray[0]).childNodes[1].className.slice(3);
 	let cardOTwo = document.getElementById(cardArray[1]).childNodes[1].className.slice(3);
 
-	if (cardOne == cardOTwo ) {
+	if ( document.getElementById(cardArray[0]).id == document.getElementById(cardArray[1]).id) {
+
+		removeClass(cardArray)
+
+	}else if(cardOne == cardOTwo){
 
 		document.getElementById(cardArray[0]).classList.add("match")
 		document.getElementById(cardArray[1]).classList.add("match")
 		cardList.length = 0
 
+		matchAll()
+
 	}else{
 
-		setTimeout(() => { removeClass(cardArray)},1000)
+		setTimeout(() => { removeClass(cardArray)},600)
 	}
+
+}
+
+//this function check if all the cards as a match class
+
+function matchAll() {
+
+	countMatches += 1
+	console.log(countMatches);
+
+
+	if(countMatches == 8){
+		alert(`You win the game in ${cont} moves`)
+	}
+
 
 }
 
