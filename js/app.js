@@ -8,6 +8,8 @@ const restart = document.querySelector('.restart')
 const cards = document.querySelectorAll('.card')
 const childCards = document.querySelectorAll('.card > .fa')
 const moves = document.querySelector('.moves')
+const stars = document.querySelectorAll('.fa-star')
+let time = document.querySelector('.displayTime');
 
 // cardsArray convert a NodeList to an Array
 const cardsArray = Array.prototype.slice.call(cards);
@@ -30,13 +32,9 @@ let countMatches = 0
 
 
 // on click of the restart button it will mix the cards random
-restart.addEventListener('click', function (e) {
+restart.addEventListener('click', function () {
 
-	let newRandomCards = shuffle(arrayCards)
-	reset()
-	changeCardPosition(childCards,newRandomCards)
-	cont = 0
-	moves.textContent =  cont
+	resetAllTheGame()
 
 })
 
@@ -111,10 +109,30 @@ cards.forEach((e) => {
 		const target = param.target
 
 		openedCards(target)
+		startsCounter()
 
 	})
 
 })
+
+//this function count the stars
+
+function startsCounter() {
+
+	if (cont == 25) {
+
+		stars[0].classList.add('hide')
+
+	} else if (cont == 40) {
+
+		stars[1].classList.add('hide')
+
+	} else {
+
+		console.log('test');
+
+	}
+}
 
 //this function add the pressed card toi an array list
 
@@ -147,6 +165,9 @@ function openedCards(card) {
 function counter() {
 
 	cont += 1
+	if (cont == 1) {
+		timer()
+	}
 	moves.textContent = cont
 
 }
@@ -168,7 +189,7 @@ function cardsMatch(cardArray) {
 		document.getElementById(cardArray[0]).classList.add("match")
 		document.getElementById(cardArray[1]).classList.add("match")
 		cardList.length = 0
-
+		playAgain ()
 		matchAll()
 
 	}else{
@@ -183,16 +204,15 @@ function cardsMatch(cardArray) {
 function matchAll() {
 
 	countMatches += 1
-	console.log(countMatches);
 
+	//this metho it will stop the timer
+	clearInterval(timer);
 
 	if(countMatches == 8){
-		alert(`You win the game in ${cont} moves`)
+		playAgain ()
 	}
 
-
 }
-
 //this function remove the "show" class
 
 function removeClass() {
@@ -204,4 +224,55 @@ function removeClass() {
 	document.getElementById(cardList[1]).classList.remove("open")
 	cardList.length = 0
 
+}
+
+//Timer inspired by https://stackoverflow.com/questions/20618355/the-simplest-possible-javascript-countdown-timer
+const timer = function timer() {
+    let minutes = 0;
+    let seconds = 0;
+    gameInterval = setInterval(function () {
+        seconds = parseInt(seconds, 10) + 1;
+        minutes = parseInt(minutes, 10);
+        if (seconds >= 60) {
+            minutes += 1;
+            seconds = 0;
+        }
+
+        seconds = seconds < 10 ? "0" + seconds : seconds;
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+
+        time.innerHTML = minutes + ":" + seconds;
+        lastTime.textContent = time.textContent;
+    }, 1000);
+}
+
+function clearTimer() {
+
+	time.innerHTML = `00:00`;
+
+}
+
+function endOfGame() {
+	clearInterval(gameInterval);
+}
+
+function playAgain () {
+	if(confirm(`You win the game in ${cont} moves!!!
+	Du you what to play again?
+	` )){
+
+		resetAllTheGame()
+	}
+}
+
+function resetAllTheGame() {
+	let newRandomCards = shuffle(arrayCards)
+	reset()
+	changeCardPosition(childCards,newRandomCards)
+	cont = 0
+	moves.textContent =  cont
+	stars[0].classList.remove('hide')
+	stars[1].classList.remove('hide')
+	endOfGame()
+	clearTimer()
 }
